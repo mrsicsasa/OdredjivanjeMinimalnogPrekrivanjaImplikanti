@@ -3,17 +3,17 @@ package controller;
 import java.util.ArrayList;
 import java.util.List;
 
-import model.PrimeImplicant;
+import model.Implicant;
 
 public class QuineMcCluskeyController {
-    private ArrayList<PrimeImplicant> primeImplicants;
+    private ArrayList<Implicant> implicants;
     private List<Integer> minterms;
 
     // Konstruktor, getteri i setteri
 
     public String generateInitialEquation() {
         StringBuilder equation = new StringBuilder();
-        for (PrimeImplicant implicant : primeImplicants) {
+        for (Implicant implicant : implicants) {
             equation.append(implicant.getVariables()).append(" + ");
         }
         return equation.substring(0, equation.length() - 3); // Uklonite poslednji " + "
@@ -21,12 +21,12 @@ public class QuineMcCluskeyController {
 
     public List<String> findEssentialImplicants() {
         List<String> essentialImplicants = new ArrayList<>();
-        List<PrimeImplicant> nonEssentialImplicants = new ArrayList<>(primeImplicants); // Kopiramo listu implicantata
+        List<Implicant> nonEssentialImplicants = new ArrayList<>(implicants); // Kopiramo listu implicantata
 
         for (Integer minterm : minterms) {
             int count = 0;
             String essentialImplicant = null;
-            for (PrimeImplicant implicant : primeImplicants) {
+            for (Implicant implicant : implicants) {
                 if (implicant.getImplicants().contains(minterm)) {
                     count++;
                     essentialImplicant = implicant.getVariables();
@@ -36,7 +36,7 @@ public class QuineMcCluskeyController {
             if (count == 1) {
                 essentialImplicants.add(essentialImplicant);
                 // Brišemo bitne implicantate iz liste implicantata
-                for (PrimeImplicant implicant : primeImplicants) {
+                for (Implicant implicant : implicants) {
                     if (implicant.getVariables().equals(essentialImplicant)) {
                         nonEssentialImplicants.remove(implicant);
                         break; // Prekidamo petlju nakon brisanja implicantata
@@ -44,7 +44,7 @@ public class QuineMcCluskeyController {
                 }
             }
         }
-        primeImplicants = new ArrayList<>(nonEssentialImplicants); // Ažuriramo listu bitno bitnih implicantata
+        implicants = new ArrayList<>(nonEssentialImplicants); // Ažuriramo listu bitno bitnih implicantata
         return essentialImplicants;
     }
 
@@ -61,8 +61,8 @@ public class QuineMcCluskeyController {
         return equation.substring(0, equation.length() - 3); // Remove the last " + "
     }
 
-    public void setPrimeImplicants(ArrayList<PrimeImplicant> primeImplicants2) {
-        primeImplicants = primeImplicants2;
+    public void setPrimeImplicants(ArrayList<Implicant> primeImplicants2) {
+        implicants = primeImplicants2;
     }
 
     public void setMinterms(List<Integer> minterms2) {

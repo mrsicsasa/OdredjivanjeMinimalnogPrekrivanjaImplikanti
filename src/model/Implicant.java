@@ -2,10 +2,10 @@ package model;
 
 import java.util.List;
 
-public class PrimeImplicant {
+public class Implicant {
 private String variables;
 private List<Integer> implicants;
-public PrimeImplicant(String variables, List<Integer> implicants) {
+public Implicant(String variables, List<Integer> implicants) {
 	super();
 	this.variables = variables;
 	this.implicants = implicants;
