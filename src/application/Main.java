@@ -1,53 +1,33 @@
 package application;
-	
 
-import java.util.ArrayList;
-import java.util.List;
-
-import controller.QuineMcCluskeyController;
 import javafx.application.Application;
-import javafx.stage.Stage;
-import model.Implicant;
 import javafx.scene.Scene;
-import javafx.scene.layout.BorderPane;
-
+import javafx.stage.Stage;
+import model.AppModel;
+import view.MainView;
+import controller.MainController;
 
 public class Main extends Application {
-	@Override
-	public void start(Stage primaryStage) {
-		try {
-			BorderPane root = new BorderPane();
-			Scene scene = new Scene(root,400,400);
-			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
-			primaryStage.setScene(scene);
-			primaryStage.show();
-		} catch(Exception e) {
-			e.printStackTrace();
-		}
-	}
-	
-	public static void main(String[] args) {
-		ArrayList<Implicant> implicants = new ArrayList<>();
-		implicants.add(new Implicant("zw'", List.of(2, 6, 10, 14,15)));
-		implicants.add(new Implicant("xy'", List.of(8, 9, 10, 11)));
-		implicants.add(new Implicant("xz", List.of(10, 11, 14, 15)));
+    @Override
+    public void start(Stage primaryStage) {
+        try {
+            // Initialize the model, view, and controller
+            AppModel model = new AppModel();
+            MainView view = new MainView(model);
+            MainController controller = new MainController(model, view);
 
-		Implicant initialImplicant=new Implicant("xyz`w`"+ " + xyz`w", List.of(2,6,8,9,10,11,14,15));
-	    
-	    System.out.println("Initial Boolean Equation:"+initialImplicant.getVariables());
-	    QuineMcCluskeyController controller = new QuineMcCluskeyController();
-	    controller.setImplicants(implicants);
-	    controller.setMinterms(initialImplicant.getImplicants());
+            // Set up the scene and stage
+            Scene scene = new Scene(view.getRoot(), 600, 400);
+            scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+            primaryStage.setScene(scene);
+            primaryStage.setTitle("K6");
+            primaryStage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
-	    // Find essential implicants
-	    List<String> essentialImplicants = controller.findEssentialImplicants();
-
-	    // Combine essential implicants to minimize equation
-	    String minimizedEquation = controller.combineImplicants(essentialImplicants);
-
-	    // Print minimized equation
-	    System.out.println("Minimized Boolean Equation: " + minimizedEquation);
-		launch(args);
-	}
-	
+    public static void main(String[] args) {
+        launch(args);
+    }
 }
