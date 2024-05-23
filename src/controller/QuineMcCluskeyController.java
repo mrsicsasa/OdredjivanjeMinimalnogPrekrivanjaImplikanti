@@ -1,72 +1,51 @@
 package controller;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import model.Implicant;
 
 public class QuineMcCluskeyController {
-    private ArrayList<Implicant> implicants;
+    private List<Implicant> implicants;
     private List<Integer> minterms;
 
-    // Konstruktor, getteri i setteri
-
-    public String generateInitialEquation() {
-        StringBuilder equation = new StringBuilder();
-        for (Implicant implicant : implicants) {
-            equation.append(implicant.getVariables()).append(" + ");
-        }
-        return equation.substring(0, equation.length() - 3); // Uklonite poslednji " + "
-    }
-
+    // Find essential implicants
     public List<String> findEssentialImplicants() {
         List<String> essentialImplicants = new ArrayList<>();
-        List<Implicant> nonEssentialImplicants = new ArrayList<>(implicants); // Kopiramo listu implicantata
+        List<Implicant> remainingImplicants = new ArrayList<>(implicants);
 
         for (Integer minterm : minterms) {
-            int count = 0;
-            String essentialImplicant = null;
-            for (Implicant implicant : implicants) {
-                if (implicant.getImplicants().contains(minterm)) {
-                    count++;
-                    essentialImplicant = implicant.getVariables();
-                    //    System.out.println(essentialImplicant);
-                }
-            }
-            if (count == 1) {
-                essentialImplicants.add(essentialImplicant);
-                // Brišemo bitne implicantate iz liste implicantata
-                for (Implicant implicant : implicants) {
-                    if (implicant.getVariables().equals(essentialImplicant)) {
-                        nonEssentialImplicants.remove(implicant);
-                        break; // Prekidamo petlju nakon brisanja implicantata
-                    }
-                }
+            List<Implicant> coveringImplicants = implicants.stream()
+                    .filter(implicant -> implicant.getImplicants().contains(minterm))
+                    .collect(Collectors.toList());
+
+            if (coveringImplicants.size() == 1) {
+                Implicant essential = coveringImplicants.get(0);
+                String essentialVariables = essential.getVariables();
+                essentialImplicants.add(essentialVariables);
+                remainingImplicants.remove(essential);
             }
         }
-        implicants = new ArrayList<>(nonEssentialImplicants); // Ažuriramo listu bitno bitnih implicantata
+        implicants = new ArrayList<>(remainingImplicants);
         return essentialImplicants;
     }
 
+    // Combine essential implicants into a single equation
     public String combineImplicants(List<String> essentialImplicants) {
-        StringBuilder equation = new StringBuilder();
-        List<String> addedImplicants = new ArrayList<>(); // Lista za praćenje dodatih implikanata
-
-        for (String implicant : essentialImplicants) {
-            if (!addedImplicants.contains(implicant)) { // Provera da li je impikant već dodat
-                equation.append(implicant).append(" + ");
-                addedImplicants.add(implicant); // Dodaj impikant u listu dodatih implikanata
-            }
-        }
-        return equation.substring(0, equation.length() - 3); // Remove the last " + "
+        Set<String> uniqueImplicants = new HashSet<>(essentialImplicants);
+        return String.join(" + ", uniqueImplicants);
     }
 
-    public void setPrimeImplicants(ArrayList<Implicant> primeImplicants2) {
-        implicants = primeImplicants2;
+    // Set prime implicants
+    public void setImplicants(List<Implicant> implicants) {
+        this.implicants = implicants;
     }
 
-    public void setMinterms(List<Integer> minterms2) {
-        minterms = minterms2;
+    // Set minterms
+    public void setMinterms(List<Integer> minterms) {
+        this.minterms = minterms;
     }
 }
-
