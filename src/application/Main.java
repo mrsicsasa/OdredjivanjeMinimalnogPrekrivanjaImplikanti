@@ -8,26 +8,26 @@ import view.MainView;
 import controller.MainController;
 
 public class Main extends Application {
-    @Override
-    public void start(Stage primaryStage) {
-        try {
-            // Initialize the model, view, and controller
-            AppModel model = new AppModel();
-            MainView view = new MainView(model);
-            MainController controller = new MainController(model, view);
+	@Override
+	public void start(Stage primaryStage) {
+		try {
+			// Initialize the model, view, and controller
+			AppModel model = new AppModel();
+			MainView view = new MainView(model);
+			MainController controller = new MainController(model, view);
 
-            // Set up the scene and stage
-            Scene scene = new Scene(view.getRoot(), 600, 400);
-            scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
-            primaryStage.setScene(scene);
-            primaryStage.setTitle("K6");
-            primaryStage.show();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+			// Set up the scene and stage
+			Scene scene = new Scene(view.getRoot(), 600, 400);
+			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+			primaryStage.setScene(scene);
+			primaryStage.setTitle("K6");
+			primaryStage.show();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 
-    public static void main(String[] args) {
-        launch(args);
-    }
+	public static void main(String[] args) {
+		launch(args);
+	}
 }
