@@ -1,0 +1,13 @@
+.table-view {
+    -fx-font-size: 14pt;
+}
+
+.label {
+    -fx-font-size: 14pt;
+    -fx-text-fill: #333;
+}
+
+.rectangle {
+    -fx-stroke: black;
+    -fx-stroke-width: 1;
+}

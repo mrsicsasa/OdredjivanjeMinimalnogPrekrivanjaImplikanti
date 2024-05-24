@@ -1,0 +1,38 @@
+package application;
+
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+
+public class Implicant {
+    private StringProperty name;
+    private StringProperty cover;
+
+    public Implicant(String name, String cover) {
+        this.name = new SimpleStringProperty(name);
+        this.cover = new SimpleStringProperty(cover);
+    }
+
+    public String getName() {
+        return name.get();
+    }
+
+    public void setName(String name) {
+        this.name.set(name);
+    }
+
+    public StringProperty nameProperty() {
+        return name;
+    }
+
+    public String getCover() {
+        return cover.get();
+    }
+
+    public void setCover(String cover) {
+        this.cover.set(cover);
+    }
+
+    public StringProperty coverProperty() {
+        return cover;
+    }
+}

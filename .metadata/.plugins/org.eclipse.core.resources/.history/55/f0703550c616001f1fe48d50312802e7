@@ -1,0 +1,24 @@
+package application;
+
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+
+public class Implicant {
+    private StringProperty vrednostImplikante;
+
+    public Implicant(String vrednostImplikante) {
+        this.vrednostImplikante = new SimpleStringProperty(vrednostImplikante);
+    }
+
+    public String getVrednostImplikante() {
+        return vrednostImplikante.get();
+    }
+
+    public void setVrednostImplikante(String vrednostImplikante) {
+        this.vrednostImplikante.set(vrednostImplikante);
+    }
+
+    public StringProperty nameProperty() {
+        return vrednostImplikante;
+    }
+}

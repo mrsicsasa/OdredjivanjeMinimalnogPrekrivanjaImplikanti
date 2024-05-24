@@ -1,0 +1,13 @@
+INDEX VERSION 1.131+C:\Users\hudob\Desktop\Projekat PERISIC\.metadata\.plugins\org.eclipse.jdt.core
+165159933.index
+1156037287.index
+3948511858.index
+1137084736.index
+1526096820.index
+3961317390.index
+1865797976.index
+4137156254.index
+103247066.index
+4018696586.index
+2562222850.index
+2698389648.index

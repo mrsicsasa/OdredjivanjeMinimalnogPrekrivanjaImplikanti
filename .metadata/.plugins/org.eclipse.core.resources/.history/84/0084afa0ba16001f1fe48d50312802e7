@@ -1,0 +1,17 @@
+package application;
+
+public class Implicant {
+    private String name;
+
+    public Implicant(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+}

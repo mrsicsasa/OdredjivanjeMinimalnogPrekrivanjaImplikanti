@@ -1,0 +1,29 @@
+.table-view {
+    -fx-font-size: 14pt;
+    -fx-table-cell-border-color: transparent;
+    -fx-padding: 10;
+}
+
+.table-column {
+    -fx-alignment: CENTER;
+}
+
+.label {
+    -fx-font-size: 14pt;
+    -fx-text-fill: #333;
+    -fx-padding: 10;
+}
+
+.rectangle {
+    -fx-stroke: black;
+    -fx-stroke-width: 1;
+}
+
+.vbox {
+    -fx-spacing: 10;
+    -fx-padding: 10;
+}
+
+.border-pane {
+    -fx-padding: 10;
+}
