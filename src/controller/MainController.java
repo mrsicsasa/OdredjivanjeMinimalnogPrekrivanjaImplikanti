@@ -12,7 +12,7 @@ public class MainController {
         this.view = view;
 
         // Add event handler
-        view.getPocniButton().setOnAction(e -> handlePocniButton());
+        
     }
 
     public void handlePocniButton() {

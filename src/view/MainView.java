@@ -1,20 +1,22 @@
 package view;
 
-import javafx.beans.binding.Bindings;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import model.AppModel;
+import model.Context;
+import model.EducationalMode;
+import model.ProjectMode;
 
 public class MainView {
     private MenuBar menuBar;
-    private Label entryLabel;
-    private Label exitLabel;
-    private Label rezimRadaLabel;
-    private Button pocniButton;
     private BorderPane root;
+    private Context context;
+    private VBox content;
 
     public MainView(AppModel model) {
+        context = new Context();
+
         menuBar = new MenuBar();
         Menu fileMenu = new Menu("File");
         MenuItem saveMenuItem = new MenuItem("Save");
@@ -25,28 +27,8 @@ public class MainView {
         fileMenu.getItems().add(saveMenuItem);
         menuBar.getMenus().addAll(fileMenu, rezimRadaMenu);
 
-        // Create labels
-        entryLabel = new Label();
-        entryLabel.textProperty().bind(Bindings.concat("Entry Function: ", model.entryFunctionProperty()));
-        exitLabel = new Label();
-        exitLabel.textProperty().bind(Bindings.concat("Exit Function: ", model.exitFunctionProperty()));
-        rezimRadaLabel = new Label();
-        rezimRadaLabel.textProperty().bind(Bindings.concat("Rezim rada: ", model.rezimRadaProperty()));
-
-        // Create buttons
-        pocniButton = new Button("Pocni");
-
-        // Arrange labels and buttons in layout
-        HBox displays = new HBox(entryLabel, exitLabel);
-        displays.setSpacing(100);
-        displays.setAlignment(Pos.CENTER);
-        displays.setStyle("-fx-padding: 10;");
-
-        HBox bottomRight = new HBox(rezimRadaLabel);
-        bottomRight.setAlignment(Pos.BOTTOM_RIGHT);
-        bottomRight.setStyle("-fx-padding: 10;");
-
-        VBox content = new VBox(displays, pocniButton);
+        // Arrange buttons in layout
+        content = new VBox();
         content.setSpacing(20);
         content.setAlignment(Pos.CENTER);
 
@@ -54,17 +36,25 @@ public class MainView {
         root = new BorderPane();
         root.setTop(menuBar);
         root.setCenter(content);
-        root.setBottom(bottomRight);
-        
-        projektantski.setOnAction(e -> model.setRezimRada("Projektantski"));
-        edukativni.setOnAction(e -> model.setRezimRada("Edukativni"));
+
+        // Set initial mode
+        context.setMode(new ProjectMode());
+        context.updateUI(content, model);
+
+        projektantski.setOnAction(e -> {
+            model.setRezimRada("Projektantski");
+            context.setMode(new ProjectMode());
+            context.updateUI(content, model);
+        });
+
+        edukativni.setOnAction(e -> {
+            model.setRezimRada("Edukativni");
+            context.setMode(new EducationalMode());
+            context.updateUI(content, model);
+        });
     }
 
     public BorderPane getRoot() {
         return root;
-    }
-
-    public Button getPocniButton() {
-        return pocniButton;
     }
 }
