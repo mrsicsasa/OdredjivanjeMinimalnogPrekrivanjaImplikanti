@@ -1,4 +1,5 @@
 package model;
+
 import javafx.beans.binding.Bindings;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -12,14 +13,18 @@ public class ProjectMode implements Mode {
     @Override
     public void updateUI(Pane root, AppModel model) {
         root.getChildren().clear();
+
         Label label = new Label("Projektantski režim aktivan");
         label.textProperty().bind(Bindings.concat("Rezim rada: ", model.rezimRadaProperty()));
-        root.getChildren().add(label);
+        label.getStyleClass().add("custom-label");
 
         Label entryLabel = new Label();
         entryLabel.textProperty().bind(Bindings.concat("Entry Function: ", model.entryFunctionProperty()));
+        entryLabel.getStyleClass().add("custom-label");
+
         Label exitLabel = new Label();
         exitLabel.textProperty().bind(Bindings.concat("Exit Function: ", model.exitFunctionProperty()));
+        exitLabel.getStyleClass().add("custom-label");
 
         HBox displays = new HBox(entryLabel, exitLabel);
         displays.setSpacing(100);
@@ -28,13 +33,20 @@ public class ProjectMode implements Mode {
 
         Button pocniButton = new Button("Pocni");
         pocniButton.setOnAction(e -> model.updateExitFunction());
+        pocniButton.getStyleClass().add("custom-button");
 
         VBox content = new VBox(displays, pocniButton);
         content.setSpacing(20);
         content.setAlignment(Pos.CENTER);
 
-        root.getChildren().add(content);
+        root.getChildren().addAll(label, content);
+
+        // Apply CSS style sheet
+        try {
+            String css = getClass().getResource("/application/application.css").toExternalForm();
+            root.getStylesheets().add(css);
+        } catch (NullPointerException e) {
+            System.err.println("CSS file not found.");
+        }
     }
-
 }
-
