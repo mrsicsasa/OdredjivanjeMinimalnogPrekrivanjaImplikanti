@@ -24,6 +24,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import controller.DataController;
+
 public class EducationalMode implements Mode {
     private TableView<Implicant> tableView;
     private Label explanationLabel;
@@ -32,6 +34,7 @@ public class EducationalMode implements Mode {
     private Implicant selectedImplicant;
     private Set<Implicant> essentialImplicants = new HashSet<>();
     private Set<Implicant> incorrectImplicants = new HashSet<>();
+    private Set<Implicant> clickedImplicants = new HashSet<>();
     private Label essentialImplicantsLabel;
 
     @Override
@@ -162,12 +165,25 @@ public class EducationalMode implements Mode {
         incorrectImplicants.add(implicant); // Dodaje implikantu u skup pogrešno odabranih
     }
 
-    private void updateEssentialImplicantsLabel() {
+    private void updateEssentialImplicantsLabel() {//ovde prepraviti sta se zapisuje,skontati takodje sta se i cita
         StringBuilder sb = new StringBuilder("Esencijalne implikante: ");
-        for (Implicant implicant : essentialImplicants) {
-            sb.append(implicant.getImplicants().toString()).append(" ");
+        StringBuilder csvSb = new StringBuilder("");
+        DataController dc = new DataController();//u kontroleru radi upis i citanje,prilagoditi samo za sta se koriste te metode
+        ArrayList<Implicant> essentialImplicantsArray = new ArrayList<Implicant>(essentialImplicants);
+        for (int i=0;i<essentialImplicantsArray.size();i++) {
+        	if(i==(essentialImplicantsArray.size() - 1)) {
+        		sb.append(essentialImplicantsArray.get(i).getVariables().toString());
+        		csvSb.append(essentialImplicantsArray.get(i).getVariables().toString());
+
+        	}else {
+        		sb.append(essentialImplicantsArray.get(i).getVariables().toString()).append("+");
+        		csvSb.append(essentialImplicantsArray.get(i).getVariables().toString()).append("+");
+        	}
         }
         essentialImplicantsLabel.setText(sb.toString());
+        if ((essentialImplicants.size() + incorrectImplicants.size()) == this.getGrupeProstihImplikanti().size()) {
+            dc.writeToCSVFile("\n" + csvSb.toString());
+        }
     }
 
     public ArrayList<Implicant> getGrupeProstihImplikanti() {
