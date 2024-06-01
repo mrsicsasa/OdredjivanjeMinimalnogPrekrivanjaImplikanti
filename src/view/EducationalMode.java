@@ -15,6 +15,7 @@ import model.Implicant;
 
 import java.util.*;
 
+import controller.DataController;
 import controller.MainController;
 
 
@@ -24,7 +25,11 @@ public class EducationalMode implements Mode {
     private Label explanationLabel;
     private Rectangle statusIndicator;
     private int dodatoX = 0;
-
+	private Labeled essentialImplicantsLabel;
+	private MainController controler;
+    private Implicant selectedImplicant;
+    private Label messageLabel = new Label();
+	
     @Override
     public void updateUI(Pane root, MainController controler) {
         root.getChildren().clear();
@@ -38,7 +43,7 @@ public class EducationalMode implements Mode {
         tableView.getColumns().add(implicantColumn);
 
         // Dodavanje kolona za jedinstvene implikante
-        Set<Integer> uniqueImplicants = getUniqueImplicants();
+        Set<Integer> uniqueImplicants = controler.getEmc().getUniqueImplicants();
         for (Integer implicant : uniqueImplicants) {
             TableColumn<Implicant, String> implicantCol = new TableColumn<>(implicant.toString());
             implicantCol.setCellValueFactory(data -> {
@@ -54,7 +59,9 @@ public class EducationalMode implements Mode {
 
             // Allow clicking to set "X"
             implicantCol.setCellFactory(col -> new TableCell<>() {
-                @Override
+
+
+				@Override
                 protected void updateItem(String item, boolean empty) {
                     super.updateItem(item, empty);
                     if (empty) {
@@ -69,10 +76,10 @@ public class EducationalMode implements Mode {
                                 		statusIndicator.setFill(Color.GREEN);
 	                                    setText("X");
 	                                    dodatoX += 1;
-	                                    if(dodatoX == getNumberOfImplicants()) {
+	                                    if(dodatoX == controler.getEmc().getNumberOfImplicants()) {
 	                                    	showModalDialog("Uspesno ste popunili tabelu. Sada mozete da birate esencijalne implikante.");
-	                                    	EducationalModeEssential eme = new EducationalModeEssential();
-	                                    	eme.updateUI(root, controler);
+	                                    	EducationalModeEssential em = new EducationalModeEssential();
+	                                    	em.updateUI(root, controler);
 	                                    }
                                 	}
                                 } else {
@@ -91,7 +98,7 @@ public class EducationalMode implements Mode {
         tableView.setMaxWidth(800);
 
         // Dodavanje vrednosti u tabelu
-        tableView.getItems().addAll(getGrupeProstihImplikanti());
+        tableView.getItems().addAll(controler.getEmc().getGrupeProstihImplikanti());
 
 //        // Dodavanje labele i indikatora
         explanationLabel = new Label("Naucicete kako da popunite tabelu implikanti, da bi kasnije mogli da izaberete esencijalne implikante.");
@@ -106,13 +113,11 @@ public class EducationalMode implements Mode {
 
         root.getChildren().add(content);
     }
-
-    private Set<Integer> getUniqueImplicants() {
-        Set<Integer> uniqueImplicants = new HashSet<>();
-        for (Implicant implicant : getGrupeProstihImplikanti()) {
-            uniqueImplicants.addAll(implicant.getImplicants());
+    
+    private void addEssentialImplicant(Implicant implicant) {
+        if (controler.getEmc().getEssentialImplicants().add(implicant)) { // Dodaje implikantu ako nije već dodata
+            updateEssentialImplicantsLabel();
         }
-        return uniqueImplicants;
     }
 
     private void showPopup(String message) {
@@ -131,22 +136,26 @@ public class EducationalMode implements Mode {
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
-    }
-    
-    public int getNumberOfImplicants() {
-    	int number = 0;
-    	ArrayList<Implicant> implicants = getGrupeProstihImplikanti();
-    	for (Implicant i:implicants) {
-    		number += i.getImplicants().size();
-    	}
-    	return number;
-    }
 
-    public ArrayList<Implicant> getGrupeProstihImplikanti() {
-        ArrayList<Implicant> implicants = new ArrayList<>();
-        implicants.add(new Implicant("zw'", List.of(2, 6, 10, 14, 15)));
-        implicants.add(new Implicant("xy'", List.of(8, 9, 10, 11)));
-        implicants.add(new Implicant("xz", List.of(10, 11, 14, 15)));
-        return implicants;
+}
+    public void updateEssentialImplicantsLabel() {//ovde prepraviti sta se zapisuje,skontati takodje sta se i cita
+        StringBuilder sb = new StringBuilder("Esencijalne implikante: ");
+        StringBuilder csvSb = new StringBuilder("");
+        DataController dc = new DataController();//u kontroleru radi upis i citanje,prilagoditi samo za sta se koriste te metode
+        ArrayList<Implicant> essentialImplicantsArray = new ArrayList<Implicant>(controler.getEmc().getEssentialImplicants());
+        for (int i=0;i<essentialImplicantsArray.size();i++) {
+        	if(i==(essentialImplicantsArray.size() - 1)) {
+        		sb.append(essentialImplicantsArray.get(i).getVariables().toString());
+        		csvSb.append(essentialImplicantsArray.get(i).getVariables().toString());
+
+        	}else {
+        		sb.append(essentialImplicantsArray.get(i).getVariables().toString()).append("+");
+        		csvSb.append(essentialImplicantsArray.get(i).getVariables().toString()).append("+");
+        	}
+        }
+        essentialImplicantsLabel.setText(sb.toString());
+        if ((controler.getEmc().getEssentialImplicants().size() + controler.getEmc().getIncorrectImplicants().size()) == controler.getEmc().getGrupeProstihImplikanti().size()) {
+            dc.writeToCSVFile("\n" + csvSb.toString());
+        }
     }
 }
