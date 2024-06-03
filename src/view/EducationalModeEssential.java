@@ -14,15 +14,11 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import model.AppModel;
-import model.EducationalEssentialModel;
 import model.Implicant;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
+
 import java.util.Set;
 
-import controller.DataController;
 import controller.EducationalModeController;
 import interfaces.Mode;
 
@@ -33,7 +29,6 @@ public class EducationalModeEssential implements Mode {
     private Rectangle statusIndicator;
     private Label messageLabel;
     private Implicant selectedImplicant;
-    private EducationalEssentialModel eem = new EducationalEssentialModel();
     private EducationalModeController emc = new EducationalModeController();
     private Label essentialImplicantsLabel;
 
@@ -98,16 +93,16 @@ public class EducationalModeEssential implements Mode {
                 if (empty || item == null) {
                     setStyle("");
                 } else {
-                    if (eem.getEssentialImplicants().contains(item)) {
+                    if (emc.getEem().getEssentialImplicants().contains(item)) {
                         setDisable(true);
                         setStyle("-fx-background-color: lightgreen;");
-                    } else if (eem.getIncorrectImplicants().contains(item)) {
+                    } else if (emc.getEem().getIncorrectImplicants().contains(item)) {
                         setDisable(true);
                         setStyle("-fx-background-color: lightcoral;");
                     } else {
                         setDisable(false);
                         if (item.equals(selectedImplicant)) {
-                            if (isCorrectImplicant(item)) {
+                            if (emc.isCorrectImplicant(item)) {
                                 setStyle("-fx-background-color: lightgreen;");
                             } else {
                                 setStyle("-fx-background-color: lightcoral;");
@@ -124,14 +119,14 @@ public class EducationalModeEssential implements Mode {
         tableView.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
             selectedImplicant = newSelection;
             if (newSelection != null) {
-                if (isCorrectImplicant(newSelection)) {
+                if (emc.isCorrectImplicant(newSelection)) {
                     statusIndicator.setFill(Color.GREEN);
                     messageLabel.setText("Izabrali ste dobru implikantu!\nOvo je tacan odabir esencijalnih implikanti\njer ostale implikante ne prekrivaju sve implikante iz ove grupe.");
-                    addEssentialImplicant(newSelection);
+                    emc.addEssentialImplicant(newSelection,essentialImplicantsLabel);
                 } else {
                     statusIndicator.setFill(Color.RED);
                     messageLabel.setText("Niste izabrali dobru implikantu.\nOvo je netacan odabir esencijalnih implikanti\njer su sve implikante iz ove grupe prekrivene u drugim grupama.");
-                    addIncorrectImplicant(newSelection);
+                    emc.addIncorrectImplicant(newSelection);
                 }
             } else {
                 statusIndicator.setFill(Color.GRAY); // Resetovanje indikatora kada nema selekcije
@@ -141,60 +136,4 @@ public class EducationalModeEssential implements Mode {
         });
     }
 
-//    private Set<Integer> getUniqueImplicants() {
-//        Set<Integer> uniqueImplicants = new HashSet<>();
-//        for (Implicant implicant : getGrupeProstihImplikanti()) {
-//            uniqueImplicants.addAll(implicant.getImplicants());
-//        }
-//        return uniqueImplicants;
-//    }
-
-    private boolean isCorrectImplicant(Implicant implicant) {
-        // Logika za proveru da li je izabrana implikanta ispravna
-        // Ovo je primer, u stvarnosti treba proveriti prema zadatoj funkciji
-        return implicant.getImplicants().contains(11);
-    }
-
-    private void addEssentialImplicant(Implicant implicant) {
-    	Set<Implicant> essentialImplicants = eem.getEssentialImplicants();
-        if (essentialImplicants.add(implicant)) { // Dodaje implikantu ako nije već dodata
-            updateEssentialImplicantsLabel();
-            eem.setEssentialImplicants(essentialImplicants);
-        }
-    }
-
-    private void addIncorrectImplicant(Implicant implicant) {
-    	Set<Implicant> incorrectImplicants = eem.getIncorrectImplicants();
-        incorrectImplicants.add(implicant); // Dodaje implikantu u skup pogrešno odabranih
-        eem.setIncorrectImplicants(incorrectImplicants);
-    }
-
-    private void updateEssentialImplicantsLabel() {//ovde prepraviti sta se zapisuje,skontati takodje sta se i cita
-        StringBuilder sb = new StringBuilder("Esencijalne implikante: ");
-        StringBuilder csvSb = new StringBuilder("");
-        DataController dc = new DataController();//u kontroleru radi upis i citanje,prilagoditi samo za sta se koriste te metode
-        ArrayList<Implicant> essentialImplicantsArray = new ArrayList<Implicant>(eem.getEssentialImplicants());
-        for (int i=0;i<essentialImplicantsArray.size();i++) {
-        	if(i==(essentialImplicantsArray.size() - 1)) {
-        		sb.append(essentialImplicantsArray.get(i).getVariables().toString());
-        		csvSb.append(essentialImplicantsArray.get(i).getVariables().toString());
-
-        	}else {
-        		sb.append(essentialImplicantsArray.get(i).getVariables().toString()).append("+");
-        		csvSb.append(essentialImplicantsArray.get(i).getVariables().toString()).append("+");
-        	}
-        }
-        essentialImplicantsLabel.setText(sb.toString());
-        if ((eem.getEssentialImplicants().size() + eem.getIncorrectImplicants().size()) == emc.getGrupeProstihImplikanti().size()) {
-            dc.writeToCSVFile("\n" + csvSb.toString());
-        }
-    }
-
-//    public ArrayList<Implicant> getGrupeProstihImplikanti() {
-//    	ArrayList<Implicant> implicants = new ArrayList<>();
-//		implicants.add(new Implicant("zw'", List.of(2, 6, 10, 14, 15)));
-//		implicants.add(new Implicant("xy'", List.of(8, 9, 10, 11)));
-//		implicants.add(new Implicant("xz", List.of(10, 11, 14, 15)));
-//        return implicants;
-//    }
 }

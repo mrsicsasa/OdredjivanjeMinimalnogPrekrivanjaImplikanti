@@ -5,16 +5,24 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
-import javafx.scene.control.Alert.AlertType;
-import javafx.stage.Popup;
-import javafx.stage.PopupWindow;
+import model.EducationalEssentialModel;
 import model.Implicant;
 
 public class EducationalModeController {
 	
+	private EducationalEssentialModel eem = new EducationalEssentialModel();
 	
+	
+	
+	public EducationalEssentialModel getEem() {
+		return eem;
+	}
+
+	public void setEem(EducationalEssentialModel eem) {
+		this.eem = eem;
+	}
+
 	public Set<Integer> getUniqueImplicants() {
         Set<Integer> uniqueImplicants = new HashSet<>();
         for (Implicant implicant : getGrupeProstihImplikanti()) {
@@ -41,5 +49,44 @@ public class EducationalModeController {
     }
     
 
+    public boolean isCorrectImplicant(Implicant implicant) {
+        // Logika za proveru da li je izabrana implikanta ispravna
+        // Ovo je primer, u stvarnosti treba proveriti prema zadatoj funkciji
+        return implicant.getImplicants().contains(11);
+    }
 
+    public void addEssentialImplicant(Implicant implicant,Label essentialImplicantsLabel) {
+    	Set<Implicant> essentialImplicants = eem.getEssentialImplicants();
+        if (essentialImplicants.add(implicant)) { // Dodaje implikantu ako nije već dodata
+            updateEssentialImplicantsLabel(essentialImplicantsLabel);
+            eem.setEssentialImplicants(essentialImplicants);
+        }
+    }
+
+    public void addIncorrectImplicant(Implicant implicant) {
+    	Set<Implicant> incorrectImplicants = eem.getIncorrectImplicants();
+        incorrectImplicants.add(implicant); // Dodaje implikantu u skup pogrešno odabranih
+        eem.setIncorrectImplicants(incorrectImplicants);
+    }
+    
+    public void updateEssentialImplicantsLabel(Label essentialImplicantsLabel) {//ovde prepraviti sta se zapisuje,skontati takodje sta se i cita
+        StringBuilder sb = new StringBuilder("Esencijalne implikante: ");
+        StringBuilder csvSb = new StringBuilder("");
+        DataController dc = new DataController();//u kontroleru radi upis i citanje,prilagoditi samo za sta se koriste te metode
+        ArrayList<Implicant> essentialImplicantsArray = new ArrayList<Implicant>(eem.getEssentialImplicants());
+        for (int i=0;i<essentialImplicantsArray.size();i++) {
+        	if(i==(essentialImplicantsArray.size() - 1)) {
+        		sb.append(essentialImplicantsArray.get(i).getVariables().toString());
+        		csvSb.append(essentialImplicantsArray.get(i).getVariables().toString());
+
+        	}else {
+        		sb.append(essentialImplicantsArray.get(i).getVariables().toString()).append("+");
+        		csvSb.append(essentialImplicantsArray.get(i).getVariables().toString()).append("+");
+        	}
+        }
+        essentialImplicantsLabel.setText(sb.toString());
+        if ((eem.getEssentialImplicants().size() + eem.getIncorrectImplicants().size()) == getGrupeProstihImplikanti().size()) {
+            dc.writeToCSVFile("\n" + csvSb.toString());
+        }
+    }
 }
