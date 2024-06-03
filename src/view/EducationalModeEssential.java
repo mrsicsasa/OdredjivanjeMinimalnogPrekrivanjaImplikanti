@@ -14,6 +14,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import model.AppModel;
+import model.EducationalEssentialModel;
 import model.Implicant;
 
 import java.util.ArrayList;
@@ -22,16 +23,18 @@ import java.util.List;
 import java.util.Set;
 
 import controller.DataController;
+import controller.EducationalModeController;
 import interfaces.Mode;
 
 public class EducationalModeEssential implements Mode {
+	
     private TableView<Implicant> tableView;
     private Label explanationLabel;
     private Rectangle statusIndicator;
     private Label messageLabel;
     private Implicant selectedImplicant;
-    private Set<Implicant> essentialImplicants = new HashSet<>();
-    private Set<Implicant> incorrectImplicants = new HashSet<>();
+    private EducationalEssentialModel eem = new EducationalEssentialModel();
+    private EducationalModeController emc = new EducationalModeController();
     private Label essentialImplicantsLabel;
 
     @Override
@@ -50,7 +53,7 @@ public class EducationalModeEssential implements Mode {
         tableView.getColumns().add(implicantColumn);
 
         // Dodavanje kolona za jedinstvene implikante
-        Set<Integer> uniqueImplicants = getUniqueImplicants();
+        Set<Integer> uniqueImplicants = emc.getUniqueImplicants();
         for (Integer implicant : uniqueImplicants) {
             TableColumn<Implicant, String> implicantCol = new TableColumn<>(implicant.toString());
             implicantCol.setCellValueFactory(data -> {
@@ -70,7 +73,7 @@ public class EducationalModeEssential implements Mode {
         tableView.setMaxWidth(800);
 
         // Dodavanje vrednosti u tabelu
-        tableView.getItems().addAll(getGrupeProstihImplikanti());
+        tableView.getItems().addAll(emc.getGrupeProstihImplikanti());
 
         // Dodavanje labele i indikatora
         explanationLabel = new Label("Naucicete kako da minimizirate prekidacku funkciju koriscenjem McCluskey metode.");
@@ -95,10 +98,10 @@ public class EducationalModeEssential implements Mode {
                 if (empty || item == null) {
                     setStyle("");
                 } else {
-                    if (essentialImplicants.contains(item)) {
+                    if (eem.getEssentialImplicants().contains(item)) {
                         setDisable(true);
                         setStyle("-fx-background-color: lightgreen;");
-                    } else if (incorrectImplicants.contains(item)) {
+                    } else if (eem.getIncorrectImplicants().contains(item)) {
                         setDisable(true);
                         setStyle("-fx-background-color: lightcoral;");
                     } else {
@@ -138,13 +141,13 @@ public class EducationalModeEssential implements Mode {
         });
     }
 
-    private Set<Integer> getUniqueImplicants() {
-        Set<Integer> uniqueImplicants = new HashSet<>();
-        for (Implicant implicant : getGrupeProstihImplikanti()) {
-            uniqueImplicants.addAll(implicant.getImplicants());
-        }
-        return uniqueImplicants;
-    }
+//    private Set<Integer> getUniqueImplicants() {
+//        Set<Integer> uniqueImplicants = new HashSet<>();
+//        for (Implicant implicant : getGrupeProstihImplikanti()) {
+//            uniqueImplicants.addAll(implicant.getImplicants());
+//        }
+//        return uniqueImplicants;
+//    }
 
     private boolean isCorrectImplicant(Implicant implicant) {
         // Logika za proveru da li je izabrana implikanta ispravna
@@ -153,20 +156,24 @@ public class EducationalModeEssential implements Mode {
     }
 
     private void addEssentialImplicant(Implicant implicant) {
+    	Set<Implicant> essentialImplicants = eem.getEssentialImplicants();
         if (essentialImplicants.add(implicant)) { // Dodaje implikantu ako nije već dodata
             updateEssentialImplicantsLabel();
+            eem.setEssentialImplicants(essentialImplicants);
         }
     }
 
     private void addIncorrectImplicant(Implicant implicant) {
+    	Set<Implicant> incorrectImplicants = eem.getIncorrectImplicants();
         incorrectImplicants.add(implicant); // Dodaje implikantu u skup pogrešno odabranih
+        eem.setIncorrectImplicants(incorrectImplicants);
     }
 
     private void updateEssentialImplicantsLabel() {//ovde prepraviti sta se zapisuje,skontati takodje sta se i cita
         StringBuilder sb = new StringBuilder("Esencijalne implikante: ");
         StringBuilder csvSb = new StringBuilder("");
         DataController dc = new DataController();//u kontroleru radi upis i citanje,prilagoditi samo za sta se koriste te metode
-        ArrayList<Implicant> essentialImplicantsArray = new ArrayList<Implicant>(essentialImplicants);
+        ArrayList<Implicant> essentialImplicantsArray = new ArrayList<Implicant>(eem.getEssentialImplicants());
         for (int i=0;i<essentialImplicantsArray.size();i++) {
         	if(i==(essentialImplicantsArray.size() - 1)) {
         		sb.append(essentialImplicantsArray.get(i).getVariables().toString());
@@ -178,16 +185,16 @@ public class EducationalModeEssential implements Mode {
         	}
         }
         essentialImplicantsLabel.setText(sb.toString());
-        if ((essentialImplicants.size() + incorrectImplicants.size()) == this.getGrupeProstihImplikanti().size()) {
+        if ((eem.getEssentialImplicants().size() + eem.getIncorrectImplicants().size()) == emc.getGrupeProstihImplikanti().size()) {
             dc.writeToCSVFile("\n" + csvSb.toString());
         }
     }
 
-    public ArrayList<Implicant> getGrupeProstihImplikanti() {
-    	ArrayList<Implicant> implicants = new ArrayList<>();
-		implicants.add(new Implicant("zw'", List.of(2, 6, 10, 14, 15)));
-		implicants.add(new Implicant("xy'", List.of(8, 9, 10, 11)));
-		implicants.add(new Implicant("xz", List.of(10, 11, 14, 15)));
-        return implicants;
-    }
+//    public ArrayList<Implicant> getGrupeProstihImplikanti() {
+//    	ArrayList<Implicant> implicants = new ArrayList<>();
+//		implicants.add(new Implicant("zw'", List.of(2, 6, 10, 14, 15)));
+//		implicants.add(new Implicant("xy'", List.of(8, 9, 10, 11)));
+//		implicants.add(new Implicant("xz", List.of(10, 11, 14, 15)));
+//        return implicants;
+//    }
 }
