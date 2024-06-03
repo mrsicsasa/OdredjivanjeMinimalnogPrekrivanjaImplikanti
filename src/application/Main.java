@@ -6,7 +6,7 @@ import javafx.stage.Stage;
 import model.AppModel;
 import view.MainView;
 import controller.DataController;
-import controller.MainController;
+import controller.Komponenta6Kontroler;
 
 public class Main extends Application {
 	@Override
@@ -15,7 +15,7 @@ public class Main extends Application {
 			// Initialize the model, view, and controller
 			AppModel model = new AppModel();
 			MainView view = new MainView(model);
-			MainController controller = new MainController(model, view);
+			Komponenta6Kontroler controller = new Komponenta6Kontroler(model, view);
 //			DataController dc = new DataController();
 //			dc.readFromCSVFile();
 			// Set up the scene and stage

@@ -6,6 +6,7 @@ import javafx.scene.layout.*;
 import model.AppModel;
 import model.Context;
 import model.EducationalMode;
+import model.EducationalModeEssential;
 import model.ProjectMode;
 
 public class MainView {
@@ -38,7 +39,7 @@ public class MainView {
         root.setCenter(content);
 
         // Set initial mode
-        context.setMode(new ProjectMode());
+        context.setMode(new EducationalModeEssential(model));
         context.updateUI(content, model);
 
         projektantski.setOnAction(e -> {
@@ -49,7 +50,7 @@ public class MainView {
 
         edukativni.setOnAction(e -> {
             model.setRezimRada("Edukativni");
-            context.setMode(new EducationalMode());
+            context.setMode(new EducationalMode(model));
             context.updateUI(content, model);
         });
     }

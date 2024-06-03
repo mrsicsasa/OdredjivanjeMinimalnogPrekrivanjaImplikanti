@@ -1,5 +1,6 @@
 package model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Implicant {
@@ -22,6 +23,7 @@ public List<Integer> getImplicants() {
 public void setImplicants(List<Integer> implicants) {
 	this.implicants = implicants;
 }
+
 @Override
 public String toString() {
 	return "PrimeImplicant [variables=" + variables + ", implicants=" + implicants + "]";
