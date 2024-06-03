@@ -5,8 +5,6 @@ import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import model.AppModel;
 import model.Context;
-import model.EducationalMode;
-import model.ProjectMode;
 
 public class MainView {
     private MenuBar menuBar;

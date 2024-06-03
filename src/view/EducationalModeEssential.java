@@ -1,4 +1,4 @@
-package model;
+package view;
 
 import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
@@ -13,7 +13,8 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-
+import model.AppModel;
+import model.Implicant;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -21,6 +22,7 @@ import java.util.List;
 import java.util.Set;
 
 import controller.DataController;
+import interfaces.Mode;
 
 public class EducationalModeEssential implements Mode {
     private TableView<Implicant> tableView;

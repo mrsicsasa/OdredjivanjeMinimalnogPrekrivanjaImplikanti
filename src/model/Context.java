@@ -1,5 +1,6 @@
 package model;
 
+import interfaces.Mode;
 import javafx.scene.layout.Pane;
 
 public class Context {
