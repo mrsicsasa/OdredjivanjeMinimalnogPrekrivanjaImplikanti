@@ -2,8 +2,13 @@ package model;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import controller.DataController;
+import controller.EducationalModeController;
 import controller.QuineMcCluskeyController;
 
 public class AppModel {
@@ -49,13 +54,26 @@ public class AppModel {
 
 	public void updateExitFunction() {
 		QuineMcCluskeyController qmController = new QuineMcCluskeyController();
+		DataController dc = new DataController();
+		EducationalModeController emc = new EducationalModeController();
+		
+		List<Implicant> implicants = null;
+		try {
+			implicants = dc.readFromCSVFile().getImplikante();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
-		List<Implicant> implicants = new ArrayList<>();
-		implicants.add(new Implicant("zw'", List.of(2, 6, 10, 14, 15)));
-		implicants.add(new Implicant("xy'", List.of(8, 9, 10, 11)));
-		implicants.add(new Implicant("xz", List.of(10, 11, 14, 15)));
-
-		Implicant initialImplicant = new Implicant("xyz`w` + xyz`w", List.of(2, 6, 8, 9, 10, 11, 14, 15));
+		Implicant initialImplicant = null;
+		List<Integer> uniqueImplicants = new ArrayList<>(emc.getUniqueImplicants());
+		try {
+			initialImplicant = new Implicant(dc.readFromCSVFile().getUlaznaFunkcija(), uniqueImplicants );
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		setEntryFunction(initialImplicant.getVariables());
 		qmController.setImplicants(implicants);
 		qmController.setMinterms(initialImplicant.getImplicants());

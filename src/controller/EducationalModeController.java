@@ -1,18 +1,21 @@
 package controller;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import interfaces.DobaviPodatke;
 import javafx.scene.control.Label;
+import model.DobavljeniPodaci;
 import model.EducationalEssentialModel;
 import model.Implicant;
 
-public class EducationalModeController {
+public class EducationalModeController implements DobaviPodatke{
 	
 	private EducationalEssentialModel eem = new EducationalEssentialModel();
-	
+	private DataController dc = new DataController();
 	
 	
 	public EducationalEssentialModel getEem() {
@@ -41,11 +44,7 @@ public class EducationalModeController {
     }
 
     public ArrayList<Implicant> getGrupeProstihImplikanti() {
-        ArrayList<Implicant> implicants = new ArrayList<>();
-        implicants.add(new Implicant("zw'", List.of(2, 6, 10, 14, 15)));
-        implicants.add(new Implicant("xy'", List.of(8, 9, 10, 11)));
-        implicants.add(new Implicant("xz", List.of(10, 11, 14, 15)));
-        return implicants;
+    	return dobaviSveStoTreba().getImplikante();
     }
     
 
@@ -71,8 +70,7 @@ public class EducationalModeController {
     
     public void updateEssentialImplicantsLabel(Label essentialImplicantsLabel) {//ovde prepraviti sta se zapisuje,skontati takodje sta se i cita
         StringBuilder sb = new StringBuilder("Esencijalne implikante: ");
-        StringBuilder csvSb = new StringBuilder("");
-        DataController dc = new DataController();//u kontroleru radi upis i citanje,prilagoditi samo za sta se koriste te metode
+        StringBuilder csvSb = new StringBuilder("");//u kontroleru radi upis i citanje,prilagoditi samo za sta se koriste te metode
         ArrayList<Implicant> essentialImplicantsArray = new ArrayList<Implicant>(eem.getEssentialImplicants());
         for (int i=0;i<essentialImplicantsArray.size();i++) {
         	if(i==(essentialImplicantsArray.size() - 1)) {
@@ -89,4 +87,19 @@ public class EducationalModeController {
             dc.writeToCSVFile("\n" + csvSb.toString());
         }
     }
+
+	@Override
+	public DobavljeniPodaci dobaviSveStoTreba() {
+		DobavljeniPodaci dp = new DobavljeniPodaci();
+		DataController dc = new DataController();
+		try {
+			dp = dc.readFromCSVFile();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return dp;
+        
+	}
+
 }
