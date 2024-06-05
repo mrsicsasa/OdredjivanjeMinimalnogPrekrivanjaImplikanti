@@ -103,7 +103,7 @@ public class Komponenta6Controller {
         Set<Integer> uniqueValues = getAllUniqueValues();
         for (Implikant implikant : model.getImplikanti()) {
             List<String> rowData = new ArrayList<>();
-            rowData.add(implikant.getFunkcija());
+            rowData.add(implikant.getFunkcija() + " " + implikant.getPoklapanja());
             for (Integer value : uniqueValues) {
                 if (currentState instanceof ProjektantskiState || tip=="Dobavi") {
                     rowData.add(implikant.getPoklapanja().contains(value) ? "X" : "");
@@ -120,8 +120,8 @@ public class Komponenta6Controller {
     // Inicijalizacija za klik na ćelije
     public void initialize() {
         Set<Integer> poklapanja = getAllUniqueValues();
-         model.esencijalne=combineImplicants(findEssentialImplicants());
-         view.getTableView().setOnMouseClicked(e -> {
+         model.setEsencijalne(combineImplicants(findEssentialImplicants()));
+        view.getTableView().setOnMouseClicked(e -> {
             if (currentState instanceof EdukativniState && !model.isEdukativnoPopunjavanjeTabeleZavrseno()) {
                 TablePosition cell = view.getTableView().getSelectionModel().getSelectedCells().get(0);
                 int rowIndex = cell.getRow();
@@ -130,7 +130,8 @@ public class Komponenta6Controller {
                 if (colIndex > 0) {
                     // Ako je kliknuto na ćeliju koja nije u prvoj koloni
                     List<String> rowData = view.getTableView().getItems().get(rowIndex);
-                    String value = rowData.get(0); // Prva kolona sadrži funkciju
+                    String[] initialValue = rowData.get(0).split(" ");     
+                    String value = initialValue[0]; // Prva kolona sadrži funkciju
                     Implikant selectedImplicant = model.getImplikanti().stream()
                             .filter(implikant -> implikant.getFunkcija().equals(value))
                             .findFirst().orElse(null);
@@ -150,37 +151,39 @@ public class Komponenta6Controller {
                         }
                     } else {
                         // Ako je kliknuto na neispravnu ćeliju
-                    	Alert alert = new Alert(Alert.AlertType.WARNING, "Netacno postavljen znak 'X'. Ova implikanta ne pripada izabranoj grupi implikanti.", ButtonType.OK);
+                        Alert alert = new Alert(Alert.AlertType.WARNING, "Netacno postavljen znak 'X'. Ova implikanta ne pripada izabranoj grupi implikanti.", ButtonType.OK);
                         alert.showAndWait();
                     }
                 } else {
                     // Ako je kliknuto na ćeliju u prvoj koloni, iskačemo dijalog s porukom
-                	Alert alert = new Alert(Alert.AlertType.WARNING, "Nije dozvoljeno kliknuti na ovu ćeliju!", ButtonType.OK);
+                    Alert alert = new Alert(Alert.AlertType.WARNING, "Nije dozvoljeno kliknuti na ovu ćeliju!", ButtonType.OK);
                     alert.showAndWait();
                 }
             } else if(currentState instanceof EdukativniState) {
-            	
-            	TablePosition cell = view.getTableView().getSelectionModel().getSelectedCells().get(0);
+            
+            TablePosition cell = view.getTableView().getSelectionModel().getSelectedCells().get(0);
                 int rowIndex = cell.getRow();
                 int colIndex = cell.getColumn();
                    // Ako je kliknuto na ćeliju koja nije u prvoj koloni
                    List<String> rowData = view.getTableView().getItems().get(rowIndex);
-                    String value = rowData.get(0); // Prva kolona sadrži funkciju
-                    if(model.esencijalne.contains(value)) {
-                    	model.esencijalne=model.esencijalne.replaceAll(value,"");
-                    	System.out.println("radi");
-                    	String plus = "";
-                    	if(model.getZavrsnaFunkcijaEdukacioniRezim().equals("")) {
-                    		plus = "";
-                    	}
-                    	else {
-                    		plus = "+";
-                    	}
-                    	model.setZavrsnaFunkcijaEdukacioniRezim(model.getZavrsnaFunkcijaEdukacioniRezim()+ plus + value);
-                    	updateView();
-                    }
+                   String[] initialValue = rowData.get(0).split(" ");     
+                   String value = initialValue[0]; // Prva kolona sadrži funkciju // Prva kolona sadrži funkciju
+                   if(model.esencijalne.contains(value)) {
+                	   //ovde se poziva bojenje u zeleno
+	                   	model.esencijalne=model.esencijalne.replaceAll(value,"");
+	                   	String plus = "";
+	                   	if(model.getZavrsnaFunkcijaEdukacioniRezim().equals("")) {
+	                   		plus = "";
+	                   	}
+	                   	else {
+	                   		plus = "+";
+	                   	}
+	                   	model.setZavrsnaFunkcijaEdukacioniRezim(model.getZavrsnaFunkcijaEdukacioniRezim()+ plus + value);
+	                   	updateView();
+                   }
                     else {
-                    	System.out.println("ne radi");
+                    //ovde ce se pozivati bojenje u crveno
+                    System.out.println("ne radi");
                     }
                 
             }
@@ -191,7 +194,7 @@ public class Komponenta6Controller {
     public List<String> findEssentialImplicants() {
         List<String> essentialImplicants = new ArrayList<>();
         List<Implikant> remainingImplicants = new ArrayList<>(model.getImplikanti());
-
+        
         for (Integer minterm : getAllUniqueValues()) {
             List<Implikant> coveringImplicants = model.getImplikanti().stream()
                     .filter(implicant -> implicant.getPoklapanja().contains(minterm))
@@ -199,7 +202,8 @@ public class Komponenta6Controller {
 
             if (coveringImplicants.size() == 1) {
                 Implikant essential = coveringImplicants.get(0);
-                String essentialVariables = essential.getFunkcija();
+                String[] essentialVariablesInitial = essential.getFunkcija().split(" ");
+                String essentialVariables = essentialVariablesInitial[0];
                 essentialImplicants.add(essentialVariables);
                 remainingImplicants.remove(essential);
             }

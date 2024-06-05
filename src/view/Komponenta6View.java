@@ -67,6 +67,7 @@ public class Komponenta6View {
 
         // Kreiranje kolone za funkciju
         TableColumn<List<String>, String> funkcijaColumn = new TableColumn<>("Funkcija");
+
         funkcijaColumn.setCellValueFactory(cellData -> new javafx.beans.property.SimpleStringProperty(cellData.getValue().get(0)));
         tableView.getColumns().add(funkcijaColumn);
 
@@ -88,7 +89,7 @@ public class Komponenta6View {
         }
     }
 
-
+    
 
 
 	public TableView<List<String>> getTableView() {
@@ -132,6 +133,7 @@ public class Komponenta6View {
 	}
 
 	public Label getIzlaznaFunkcijaValueLabel() {
+		//ovde ide deo za bojenje
 		return izlaznaFunkcijaValueLabel;
 	}
 

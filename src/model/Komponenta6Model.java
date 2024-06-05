@@ -21,8 +21,22 @@ public class Komponenta6Model {
         this.edukativnoPopunjavanjeTabeleZavrseno=false;
         this.zavrsnaFunkcijaEdukacioniRezim="";
     }
+    
+    
 
-    public String getPocetnaFunkcija() {
+    public String getEsencijalne() {
+		return esencijalne;
+	}
+
+
+
+	public void setEsencijalne(String esencijalne) {
+		this.esencijalne = esencijalne;
+	}
+
+
+
+	public String getPocetnaFunkcija() {
         return pocetnaFunkcija;
     }
 
