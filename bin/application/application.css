@@ -27,3 +27,6 @@
     -fx-spacing: 20px;
     -fx-alignment: center;
 }
+.table-cell-x {
+    -fx-background-color: lightgreen;
+}
