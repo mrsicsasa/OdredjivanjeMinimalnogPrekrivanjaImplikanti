@@ -1,21 +1,33 @@
 package controller;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-import javax.sound.midi.Soundbank;
-
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
-import javafx.scene.control.TableCell;
+import javafx.scene.control.Label;
 import javafx.scene.control.TablePosition;
-import javafx.scene.control.TableRow;
-import javafx.scene.paint.Color;
+import javafx.scene.input.MouseEvent;
+import javafx.stage.Popup;
+import javafx.stage.PopupWindow;
+import javafx.util.Duration;
+import model.DobavljeniPodaci;
 import model.EdukativniState;
 import model.Implikant;
 import model.Komponenta6Model;
@@ -27,6 +39,7 @@ public class Komponenta6Controller {
     private Komponenta6Model model;
     private Komponenta6View view;
     private State currentState;
+    
 
     public Komponenta6Controller(Komponenta6Model model, Komponenta6View view) {
         this.model = model;
@@ -108,7 +121,7 @@ public class Komponenta6Controller {
     public void initialize() {
         Set<Integer> poklapanja = getAllUniqueValues();
          model.esencijalne=combineImplicants(findEssentialImplicants());
-        view.getTableView().setOnMouseClicked(e -> {
+         view.getTableView().setOnMouseClicked(e -> {
             if (currentState instanceof EdukativniState && !model.isEdukativnoPopunjavanjeTabeleZavrseno()) {
                 TablePosition cell = view.getTableView().getSelectionModel().getSelectedCells().get(0);
                 int rowIndex = cell.getRow();
@@ -137,12 +150,12 @@ public class Komponenta6Controller {
                         }
                     } else {
                         // Ako je kliknuto na neispravnu ćeliju
-                        Alert alert = new Alert(Alert.AlertType.WARNING, "Netacno postavljen znak 'X'. Ova implikanta ne pripada izabranoj grupi implikanti.", ButtonType.OK);
+                    	Alert alert = new Alert(Alert.AlertType.WARNING, "Netacno postavljen znak 'X'. Ova implikanta ne pripada izabranoj grupi implikanti.", ButtonType.OK);
                         alert.showAndWait();
                     }
                 } else {
                     // Ako je kliknuto na ćeliju u prvoj koloni, iskačemo dijalog s porukom
-                    Alert alert = new Alert(Alert.AlertType.WARNING, "Nije dozvoljeno kliknuti na ovu ćeliju!", ButtonType.OK);
+                	Alert alert = new Alert(Alert.AlertType.WARNING, "Nije dozvoljeno kliknuti na ovu ćeliju!", ButtonType.OK);
                     alert.showAndWait();
                 }
             } else if(currentState instanceof EdukativniState) {
@@ -156,7 +169,14 @@ public class Komponenta6Controller {
                     if(model.esencijalne.contains(value)) {
                     	model.esencijalne=model.esencijalne.replaceAll(value,"");
                     	System.out.println("radi");
-                    	model.setZavrsnaFunkcijaEdukacioniRezim(model.getZavrsnaFunkcijaEdukacioniRezim()+value);
+                    	String plus = "";
+                    	if(model.getZavrsnaFunkcijaEdukacioniRezim().equals("")) {
+                    		plus = "";
+                    	}
+                    	else {
+                    		plus = "+";
+                    	}
+                    	model.setZavrsnaFunkcijaEdukacioniRezim(model.getZavrsnaFunkcijaEdukacioniRezim()+ plus + value);
                     	updateView();
                     }
                     else {
@@ -200,6 +220,11 @@ public class Komponenta6Controller {
             
            model.setEdukativnoPopunjavanjeTabeleZavrseno(true);;
         }
+        
+    }
+    
+    private void showPopup(String message) {
+
         
     }
 

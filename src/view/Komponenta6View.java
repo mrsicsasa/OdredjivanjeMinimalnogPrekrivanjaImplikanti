@@ -8,6 +8,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -19,19 +20,29 @@ public class Komponenta6View {
     private Label izlaznaFunkcijaLabel;
     private Label pocetnaFunkcijaValueLabel;
     private Label izlaznaFunkcijaValueLabel; 
+
     public Komponenta6View() {
         comboBox = new ComboBox<>();
         comboBox.getItems().addAll("Projektantski", "Edukativni");
         comboBox.setValue("Projektantski");
+        comboBox.getStyleClass().add("custom-button");
 
         tableView = new TableView<>();
         pocetnaFunkcijaLabel = new Label("Pocetna funkcija: ");
         pocetnaFunkcijaValueLabel = new Label(""); // Prazan label koji će se ažurirati iz kontrolera
+        pocetnaFunkcijaLabel.getStyleClass().add("custom-label");
+        pocetnaFunkcijaValueLabel.getStyleClass().add("custom-label");
+
         HBox pocetnaFunkcijaLayout = new HBox(pocetnaFunkcijaLabel, pocetnaFunkcijaValueLabel);
+        pocetnaFunkcijaLayout.getStyleClass().add("hbox");
         
         izlaznaFunkcijaLabel = new Label("Izlazna funkcija: ");
         izlaznaFunkcijaValueLabel = new Label(""); // Prazan label koji će se ažurirati iz kontrolera
+        izlaznaFunkcijaLabel.getStyleClass().add("custom-label");
+        izlaznaFunkcijaValueLabel.getStyleClass().add("custom-label");
+
         HBox izlaznaFunkcijaLayout = new HBox(izlaznaFunkcijaLabel, izlaznaFunkcijaValueLabel);
+        izlaznaFunkcijaLayout.getStyleClass().add("hbox");
         layout = new VBox(comboBox, pocetnaFunkcijaLayout, izlaznaFunkcijaLayout, tableView);
     }
 
@@ -62,10 +73,23 @@ public class Komponenta6View {
         // Kreiranje dodatnih kolona za jedinstvene vrednosti
         for (Integer value : uniqueValues) {
             TableColumn<List<String>, String> valueColumn = new TableColumn<>(String.valueOf(value));
-            valueColumn.setCellValueFactory(cellData -> new javafx.beans.property.SimpleStringProperty(cellData.getValue().get(value)));
+
+            valueColumn.setCellValueFactory(cellData -> {
+                int columnIndex = tableView.getColumns().indexOf(valueColumn);
+                List<String> rowValues = cellData.getValue();
+                if (columnIndex < rowValues.size()) {
+                    return new javafx.beans.property.SimpleStringProperty(rowValues.get(columnIndex));
+                } else {
+                    return new javafx.beans.property.SimpleStringProperty("");
+                }
+            });
+
             tableView.getColumns().add(valueColumn);
         }
     }
+
+
+
 
 	public TableView<List<String>> getTableView() {
 		return tableView;
