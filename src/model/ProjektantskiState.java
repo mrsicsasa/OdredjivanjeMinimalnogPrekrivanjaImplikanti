@@ -1,5 +1,8 @@
 package model;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 import controller.Komponenta6Controller;
 
 public class ProjektantskiState implements State {

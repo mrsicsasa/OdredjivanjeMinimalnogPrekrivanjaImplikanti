@@ -8,8 +8,9 @@ import javafx.scene.control.TableView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public class Komponenta6View {
@@ -19,9 +20,9 @@ public class Komponenta6View {
     private Label pocetnaFunkcijaLabel;
     private Label izlaznaFunkcijaLabel;
     private Label pocetnaFunkcijaValueLabel;
-    private Label izlaznaFunkcijaValueLabel; 
+    private Label izlaznaFunkcijaValueLabel;
 
-    public Komponenta6View() {
+	public Komponenta6View() {
         comboBox = new ComboBox<>();
         comboBox.getItems().addAll("Projektantski", "Edukativni");
         comboBox.setValue("Projektantski");
@@ -89,7 +90,6 @@ public class Komponenta6View {
         }
     }
 
-    
 
 
 	public TableView<List<String>> getTableView() {

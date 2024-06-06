@@ -5,6 +5,7 @@
 }
 
 .custom-button {
+	-fx-alignment:center;
     -fx-font-size: 18px;
     -fx-padding: 10px 20px 10px 10px;
     -fx-background-color: #4CAF50;
@@ -26,5 +27,13 @@
 .vbox {
     -fx-spacing: 20px;
     -fx-alignment: center;
+}
+
+.red-row {
+    -fx-background-color: red;
+}
+
+.green-row {
+    -fx-background-color: green;
 }
 

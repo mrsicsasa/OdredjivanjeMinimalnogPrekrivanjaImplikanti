@@ -1,14 +1,9 @@
 package application;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import controller.Komponenta6Controller;
 import javafx.application.Application;
-import javafx.collections.FXCollections;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import model.Implikant;
 import model.Komponenta6Model;
 import view.Komponenta6View;
 

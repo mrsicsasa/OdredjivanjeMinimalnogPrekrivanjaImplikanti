@@ -1,33 +1,26 @@
 package controller;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.nio.file.Paths;
+
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
+
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.EventHandler;
+import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
-import javafx.scene.control.Label;
+
 import javafx.scene.control.TablePosition;
-import javafx.scene.input.MouseEvent;
-import javafx.stage.Popup;
-import javafx.stage.PopupWindow;
-import javafx.util.Duration;
-import model.DobavljeniPodaci;
+import javafx.scene.control.TableRow;
+import javafx.scene.control.TableView;
 import model.EdukativniState;
 import model.Implikant;
 import model.Komponenta6Model;
@@ -55,6 +48,9 @@ public class Komponenta6Controller {
 
             } else if (selectedState.equals("Edukativni")) {
                 setState(new EdukativniState());
+                this.model.setKliknutiRedovi(new ArrayList<HashMap<Integer,Boolean>>());
+    		 	this.model.setEdukativnoPopunjavanjeTabeleZavrseno(false);
+    		 	this.model.setZavrsnaFunkcijaEdukacioniRezim("");
                 updateView();
             }
             model.setRedoviTabele(getDataForTable(""));
@@ -117,10 +113,10 @@ public class Komponenta6Controller {
         return data;
     }
 
-    // Inicijalizacija za klik na ćelije
     public void initialize() {
         Set<Integer> poklapanja = getAllUniqueValues();
-         model.setEsencijalne(combineImplicants(findEssentialImplicants()));
+        model.setEsencijalne(combineImplicants(findEssentialImplicants()));
+
         view.getTableView().setOnMouseClicked(e -> {
             if (currentState instanceof EdukativniState && !model.isEdukativnoPopunjavanjeTabeleZavrseno()) {
                 TablePosition cell = view.getTableView().getSelectionModel().getSelectedCells().get(0);
@@ -130,7 +126,7 @@ public class Komponenta6Controller {
                 if (colIndex > 0) {
                     // Ako je kliknuto na ćeliju koja nije u prvoj koloni
                     List<String> rowData = view.getTableView().getItems().get(rowIndex);
-                    String[] initialValue = rowData.get(0).split(" ");     
+                    String[] initialValue = rowData.get(0).split(" ");
                     String value = initialValue[0]; // Prva kolona sadrži funkciju
                     Implikant selectedImplicant = model.getImplikanti().stream()
                             .filter(implikant -> implikant.getFunkcija().equals(value))
@@ -145,13 +141,12 @@ public class Komponenta6Controller {
                             updateView();
                             checkIfAllXAdded();
                             if (model.isEdukativnoPopunjavanjeTabeleZavrseno()) {
-                                showModalDialog("Gotovo.Izaberite esencijalne");
+                                showModalDialog("Gotovo. Izaberite esencijalne");
                             }
-
                         }
                     } else {
                         // Ako je kliknuto na neispravnu ćeliju
-                        Alert alert = new Alert(Alert.AlertType.WARNING, "Netacno postavljen znak 'X'. Ova implikanta ne pripada izabranoj grupi implikanti.", ButtonType.OK);
+                        Alert alert = new Alert(Alert.AlertType.WARNING, "Netacno postavljen znak 'X'. Ova implikanta ne pripada izabranoj grupi implikanata.", ButtonType.OK);
                         alert.showAndWait();
                     }
                 } else {
@@ -159,36 +154,91 @@ public class Komponenta6Controller {
                     Alert alert = new Alert(Alert.AlertType.WARNING, "Nije dozvoljeno kliknuti na ovu ćeliju!", ButtonType.OK);
                     alert.showAndWait();
                 }
-            } else if(currentState instanceof EdukativniState) {
-            
-            TablePosition cell = view.getTableView().getSelectionModel().getSelectedCells().get(0);
-                int rowIndex = cell.getRow();
-                int colIndex = cell.getColumn();
-                   // Ako je kliknuto na ćeliju koja nije u prvoj koloni
-                   List<String> rowData = view.getTableView().getItems().get(rowIndex);
-                   String[] initialValue = rowData.get(0).split(" ");     
-                   String value = initialValue[0]; // Prva kolona sadrži funkciju // Prva kolona sadrži funkciju
-                   if(model.esencijalne.contains(value)) {
-                	   //ovde se poziva bojenje u zeleno
-	                   	model.esencijalne=model.esencijalne.replaceAll(value,"");
-	                   	String plus = "";
-	                   	if(model.getZavrsnaFunkcijaEdukacioniRezim().equals("")) {
-	                   		plus = "";
-	                   	}
-	                   	else {
-	                   		plus = "+";
-	                   	}
-	                   	model.setZavrsnaFunkcijaEdukacioniRezim(model.getZavrsnaFunkcijaEdukacioniRezim()+ plus + value);
-	                   	updateView();
-                   }
-                    else {
-                    //ovde ce se pozivati bojenje u crveno
-                    System.out.println("ne radi");
+            } else if (currentState instanceof EdukativniState && model.isEdukativnoPopunjavanjeTabeleZavrseno()) {
+                int rowIndex = view.getTableView().getSelectionModel().getSelectedIndex();
+                if (rowIndex >= 0) {
+                    List<String> rowData = view.getTableView().getItems().get(rowIndex);
+                    String[] initialValue = rowData.get(0).split(" ");
+                    String value = initialValue[0];
+                    if (model.getEsencijalne().contains(value)) {
+                        view.getTableView().getItems().get(rowIndex).set(0, value);
+                        model.setEsencijalne(model.getEsencijalne().replaceAll(value, ""));
+                        String plus = model.getZavrsnaFunkcijaEdukacioniRezim().isEmpty() ? "" : "+";
+                        model.setZavrsnaFunkcijaEdukacioniRezim(model.getZavrsnaFunkcijaEdukacioniRezim() + plus + value);
+                        view.getTableView().refresh();
+                        updateView();
+                        System.out.println(rowIndex);
+                        HashMap<Integer, Boolean> map = new HashMap<>();
+                        map.put(rowIndex, true);
+                        model.getKliknutiRedovi().add(map);
+                        applyRowColorAndDisable();
+                    }else {
+                    	System.out.println(rowIndex);
+                    	HashMap<Integer, Boolean> map = new HashMap<>();
+                        map.put(rowIndex, false);
+                        model.getKliknutiRedovi().add(map);
+                        applyRowColorAndDisable();
+
                     }
-                
+                }
+            }
+        });
+
+    }
+
+    private void applyRowColorAndDisable() {
+    	System.out.println(model.getKliknutiRedovi());
+        // Postavljamo rowFactory za tabelu samo jednom
+        view.getTableView().setRowFactory(tv -> new TableRow<List<String>>() {
+            @Override
+            protected void updateItem(List<String> item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setStyle("");
+                    setDisable(false);
+                } else {
+                    int currentIndex = getIndex();
+                    boolean isRowDisabled = false;
+
+                    // Proveravamo da li je trenutni red prisutan u listi tfrows i uzimamo njegov status
+                    for (HashMap<Integer, Boolean> map : model.getKliknutiRedovi()) {
+                        if (map.containsKey(currentIndex)) {
+                            boolean isGoodCondition = map.get(currentIndex);
+                            if (isGoodCondition) {
+                                setStyle("-fx-background-color: lightgreen;");
+                            } else {
+                                setStyle("-fx-background-color: lightcoral;");
+                            }
+                            setDisable(true);
+                            isRowDisabled = true;
+                            break; // Pronašli smo red, nema potrebe dalje tražiti
+                        }
+                    }
+
+                    if (!isRowDisabled) {
+                        setStyle("");
+                        setDisable(false);
+                    }
+                }
             }
         });
     }
+
+
+
+
+
+
+    
+
+
+
+
+
+
+
+
+
 
     
     public List<String> findEssentialImplicants() {
@@ -227,10 +277,6 @@ public class Komponenta6Controller {
         
     }
     
-    private void showPopup(String message) {
-
-        
-    }
 
     // Prikaži modalni dijalog
     private void showModalDialog(String message) {

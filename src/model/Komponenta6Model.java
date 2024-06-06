@@ -2,6 +2,7 @@ package model;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import javafx.collections.ObservableList;
@@ -14,6 +15,10 @@ public class Komponenta6Model {
     private String zavrsnaFunkcijaEdukacioniRezim;
     private DobavljeniPodaci dp = new DobavljeniPodaci();
     public String esencijalne="";
+    private ArrayList<HashMap<Integer,Boolean>> kliknutiRedovi = new ArrayList<HashMap<Integer,Boolean>>();
+
+    
+
 
     public Komponenta6Model() {
     	this.getPodaci();
@@ -21,10 +26,22 @@ public class Komponenta6Model {
         this.edukativnoPopunjavanjeTabeleZavrseno=false;
         this.zavrsnaFunkcijaEdukacioniRezim="";
     }
-    
+
     
 
-    public String getEsencijalne() {
+	public ArrayList<HashMap<Integer, Boolean>> getKliknutiRedovi() {
+		return kliknutiRedovi;
+	}
+
+
+
+	public void setKliknutiRedovi(ArrayList<HashMap<Integer, Boolean>> kliknutiRedovi) {
+		this.kliknutiRedovi = kliknutiRedovi;
+	}
+
+
+
+	public String getEsencijalne() {
 		return esencijalne;
 	}
 
