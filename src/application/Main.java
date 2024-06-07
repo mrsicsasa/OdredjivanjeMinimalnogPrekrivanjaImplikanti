@@ -1,30 +1,37 @@
 package application;
 
-import controller.Komponenta6Controller;
+import controller.Komponenta6Kontroler;
 import javafx.application.Application;
 import javafx.scene.Scene;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import javafx.stage.Stage;
 import model.Komponenta6Model;
-import view.Komponenta6View;
+import view.Komponenta6Pogled;
 
 
 public class Main extends Application {
 	@Override
 	public void start(Stage primaryStage) {
 		try {
-		  	Komponenta6Model model = new Komponenta6Model();
-	        Komponenta6View view = new Komponenta6View();
-	        Komponenta6Controller controller = new Komponenta6Controller(model, view);
-	        controller.initialize();
-	        // Postavljanje početnih podataka
-	        controller.setModelData(model.getPocetnaFunkcija()); //pocetna funkcija
-	        // Ažuriranje prikaza sa podrazumevanim stanjem (ProjektantskiState)
-	        controller.updateView();
-	        Scene scene = new Scene(view.getLayout(), 700, 500);
-	        scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
-	        primaryStage.setScene(scene);
-	        primaryStage.setTitle("MVC State Pattern Example");
-	        primaryStage.show();
+            TabPane tabPane = new TabPane();
+
+            Komponenta6Model model = new Komponenta6Model();
+            Komponenta6Pogled view = new Komponenta6Pogled();
+            Komponenta6Kontroler controller = new Komponenta6Kontroler(model, view);
+            controller.initialize();
+
+
+            Tab tab = new Tab("Komponenta6");
+            tab.setContent(view.getLayout());
+
+            tabPane.getTabs().add(tab);
+            Scene scene = new Scene(tabPane, 700, 500);
+            scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+            
+            primaryStage.setScene(scene);
+            primaryStage.setTitle("Projektovanje mreze sa memorijom (LPMM)");
+            primaryStage.show();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

@@ -1,19 +1,17 @@
 package view;
 
 import javafx.collections.ObservableList;
+import javafx.geometry.Pos;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
-public class Komponenta6View {
+public class Komponenta6Pogled {
     private ComboBox<String> comboBox;
     private TableView<List<String>> tableView;
     private VBox layout;
@@ -22,7 +20,7 @@ public class Komponenta6View {
     private Label pocetnaFunkcijaValueLabel;
     private Label izlaznaFunkcijaValueLabel;
 
-	public Komponenta6View() {
+	public Komponenta6Pogled() {
         comboBox = new ComboBox<>();
         comboBox.getItems().addAll("Projektantski", "Edukativni");
         comboBox.setValue("Projektantski");
@@ -45,6 +43,7 @@ public class Komponenta6View {
         HBox izlaznaFunkcijaLayout = new HBox(izlaznaFunkcijaLabel, izlaznaFunkcijaValueLabel);
         izlaznaFunkcijaLayout.getStyleClass().add("hbox");
         layout = new VBox(comboBox, pocetnaFunkcijaLayout, izlaznaFunkcijaLayout, tableView);
+        layout.setAlignment(Pos.CENTER);
     }
 
     public void updateView(String data) {
@@ -133,7 +132,6 @@ public class Komponenta6View {
 	}
 
 	public Label getIzlaznaFunkcijaValueLabel() {
-		//ovde ide deo za bojenje
 		return izlaznaFunkcijaValueLabel;
 	}
 

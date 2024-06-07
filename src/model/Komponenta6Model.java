@@ -9,8 +9,9 @@ import javafx.collections.ObservableList;
 import utils.DobavljeniPodaci;
 
 public class Komponenta6Model {
+	
 	private String pocetnaFunkcija;
-    private ArrayList<Implikant> implikanti;
+    private ArrayList<Implikanta> implikanti;
     private ObservableList<List<String>> redoviTabele;
     private boolean edukativnoPopunjavanjeTabeleZavrseno;
     private String zavrsnaFunkcijaEdukacioniRezim;
@@ -18,41 +19,27 @@ public class Komponenta6Model {
     public String esencijalne="";
     private ArrayList<HashMap<Integer,Boolean>> kliknutiRedovi = new ArrayList<HashMap<Integer,Boolean>>();
 
-    
-
-
     public Komponenta6Model() {
     	this.getPodaci();
-//    	this.implikanti = new ArrayList<Implikant>();
         this.edukativnoPopunjavanjeTabeleZavrseno=false;
         this.zavrsnaFunkcijaEdukacioniRezim="";
     }
-
-    
 
 	public ArrayList<HashMap<Integer, Boolean>> getKliknutiRedovi() {
 		return kliknutiRedovi;
 	}
 
-
-
 	public void setKliknutiRedovi(ArrayList<HashMap<Integer, Boolean>> kliknutiRedovi) {
 		this.kliknutiRedovi = kliknutiRedovi;
 	}
-
-
 
 	public String getEsencijalne() {
 		return esencijalne;
 	}
 
-
-
 	public void setEsencijalne(String esencijalne) {
 		this.esencijalne = esencijalne;
 	}
-
-
 
 	public String getPocetnaFunkcija() {
         return pocetnaFunkcija;
@@ -62,12 +49,12 @@ public class Komponenta6Model {
         this.pocetnaFunkcija = pocetnaFunkcija;
     }
 
-    public ArrayList<Implikant> getImplikanti() {
+    public ArrayList<Implikanta> getImplikanti() {
         return implikanti;
     }
     
 
-    public void setImplikanti(ArrayList<Implikant> implikanti) {
+    public void setImplikanti(ArrayList<Implikanta> implikanti) {
         this.implikanti = implikanti;
     }
 

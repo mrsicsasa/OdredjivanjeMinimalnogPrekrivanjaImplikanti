@@ -1,9 +1,10 @@
 package interfaces;
 
-import controller.Komponenta6Controller;
+import controller.Komponenta6Kontroler;
 
 public interface State {
-	 void displayResult(Komponenta6Controller controller);
+	
+	 void displayResult(Komponenta6Kontroler controller);
 }
 
 
