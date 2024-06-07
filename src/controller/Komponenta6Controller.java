@@ -10,8 +10,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-
-
+import interfaces.State;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
@@ -21,11 +20,11 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.TablePosition;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
-import model.EdukativniState;
 import model.Implikant;
 import model.Komponenta6Model;
-import model.ProjektantskiState;
-import model.State;
+import state.EdukativniState;
+import state.InicijalniState;
+import state.ProjektantskiState;
 import view.Komponenta6View;
 
 public class Komponenta6Controller {
@@ -37,7 +36,7 @@ public class Komponenta6Controller {
     public Komponenta6Controller(Komponenta6Model model, Komponenta6View view) {
         this.model = model;
         this.view = view;
-        this.currentState = new ProjektantskiState(); // default state
+        this.currentState = new InicijalniState(); // default state
 
         // Setovanje akcije za ComboBox
         view.getComboBox().setOnAction(e -> {
@@ -45,13 +44,14 @@ public class Komponenta6Controller {
             String selectedState = view.getComboBox().getValue();
             if (selectedState.equals("Projektantski")) {
                 setState(new ProjektantskiState());
+                this.model.setKliknutiRedovi(new ArrayList<HashMap<Integer,Boolean>>());
 
             } else if (selectedState.equals("Edukativni")) {
                 setState(new EdukativniState());
                 this.model.setKliknutiRedovi(new ArrayList<HashMap<Integer,Boolean>>());
     		 	this.model.setEdukativnoPopunjavanjeTabeleZavrseno(false);
     		 	this.model.setZavrsnaFunkcijaEdukacioniRezim("");
-                updateView();
+    		 	initialize();
             }
             model.setRedoviTabele(getDataForTable(""));
             updateView();
@@ -160,6 +160,7 @@ public class Komponenta6Controller {
                     List<String> rowData = view.getTableView().getItems().get(rowIndex);
                     String[] initialValue = rowData.get(0).split(" ");
                     String value = initialValue[0];
+                    System.out.println(model.esencijalne);
                     if (model.getEsencijalne().contains(value)) {
                         view.getTableView().getItems().get(rowIndex).set(0, value);
                         model.setEsencijalne(model.getEsencijalne().replaceAll(value, ""));
@@ -225,22 +226,6 @@ public class Komponenta6Controller {
     }
 
 
-
-
-
-
-    
-
-
-
-
-
-
-
-
-
-
-    
     public List<String> findEssentialImplicants() {
         List<String> essentialImplicants = new ArrayList<>();
         List<Implikant> remainingImplicants = new ArrayList<>(model.getImplikanti());

@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import javafx.collections.ObservableList;
+import utils.DobavljeniPodaci;
 
 public class Komponenta6Model {
 	private String pocetnaFunkcija;

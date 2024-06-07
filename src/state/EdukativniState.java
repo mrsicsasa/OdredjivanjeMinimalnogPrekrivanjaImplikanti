@@ -1,9 +1,10 @@
-package model;
+package state;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
 import controller.Komponenta6Controller;
+import interfaces.State;
 
 
 public class EdukativniState implements State {

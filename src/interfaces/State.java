@@ -1,4 +1,4 @@
-package model;
+package interfaces;
 
 import controller.Komponenta6Controller;
 
