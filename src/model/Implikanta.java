@@ -2,11 +2,11 @@ package model;
 
 import java.util.List;
 
-public class Implikant {
+public class Implikanta {
     private String funkcija;
     private List<Integer> poklapanja;
 
-    public Implikant(String funkcija, List<Integer> poklapanja) {
+    public Implikanta(String funkcija, List<Integer> poklapanja) {
         this.funkcija = funkcija;
         this.poklapanja = poklapanja;
     }
